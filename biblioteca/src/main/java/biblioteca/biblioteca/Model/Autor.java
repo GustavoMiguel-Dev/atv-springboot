@@ -29,4 +29,8 @@ public class Autor {
 
     // Adicione a relação com Livro aqui
 
+    @OneToMany(mappedBy = "autor", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private java.util.List<Livro> livros;
+
 }
