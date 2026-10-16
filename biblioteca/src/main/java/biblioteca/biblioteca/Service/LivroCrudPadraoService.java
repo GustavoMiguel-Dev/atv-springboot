@@ -23,7 +23,10 @@ public class LivroCrudPadraoService implements LivroCrudService {
 
     @Override
     public LivroResponseDto criaLivro(LivroPostPutDto dto) {
-        // Busca o autor pelo ID para fazer a associação
+        if (livroRepository.existsByIsbn(dto.getIsbn())) {
+            throw new RuntimeException("Já existe um livro cadastrado com este ISBN.");
+        }
+
         Autor autor = autorRepository.findById(dto.getAutorId())
                 .orElseThrow(() -> new RuntimeException("Autor não encontrado"));
 
@@ -43,6 +46,10 @@ public class LivroCrudPadraoService implements LivroCrudService {
     public LivroResponseDto atualizaLivro(Long id, LivroPostPutDto dto) {
         Livro livroExistente = livroRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
+
+        if (!livroExistente.getIsbn().equals(dto.getIsbn()) && livroRepository.existsByIsbn(dto.getIsbn())) {
+            throw new RuntimeException("Já existe outro livro cadastrado com este ISBN.");
+        }
 
         Autor autor = autorRepository.findById(dto.getAutorId())
                 .orElseThrow(() -> new RuntimeException("Autor não encontrado"));
